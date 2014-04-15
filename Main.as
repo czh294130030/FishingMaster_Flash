@@ -8,6 +8,7 @@
 	//[SWF(width="1024", height="768", backgroundColor="#ffffff", frameRate="24")]
 	public class Main extends Sprite
 	{
+		private var base:Base=new Base();
 		private var cannon_current_level:Number = 1;//当前加农炮的等级
 		private var cannon_max_level:Number = 7;//加农炮的最高等级
 		public function Main()
@@ -20,6 +21,13 @@
 			cannon_minus_mc.addEventListener(MouseEvent.CLICK, cannonMinusMouseClick);
 			//增大加农炮;
 			cannon_plus_mc.addEventListener(MouseEvent.CLICK, cannonPlusMouseClick);
+			//创建鱼群
+			createFish();
+		}
+		//创建鱼群
+		private function createFish():void
+		{
+			base.createFish(stage);
 		}
 		//减小加农炮;
 		private function cannonMinusMouseClick(e:MouseEvent):void
@@ -29,7 +37,7 @@
 			{
 				cannon_current_level = 8;
 			}
-			//cannon_mc.gotoAndStop(--cannon_current_level);
+			cannon_mc.gotoAndStop(--cannon_current_level);
 		}
 		//增大加农炮;
 		private function cannonPlusMouseClick(e:MouseEvent):void
@@ -39,7 +47,7 @@
 			{
 				cannon_current_level = 0;
 			}
-			//cannon_mc.gotoAndStop(++cannon_current_level);
+			cannon_mc.gotoAndStop(++cannon_current_level);
 		}
 		//鼠标松开增大、减小加农炮按钮
 		private function cannonMouseUp(e:MouseEvent):void
