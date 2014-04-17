@@ -18,10 +18,6 @@
 		private var cannon:MovieClip = null;//加农炮
 		private var isCanShoot:Boolean = true;//是否有效发射子弹
 		private var shootTimer:Timer = null;//用来控制射击时间间隔
-		private var my_money:Number = 10000;//用户拥有的金额
-		private var max_money:Number = 999999;//最大金额
-		private var black1,black2,black3,black4,black5,black6:BlackNum;//用户金额容器
-		private var blacks:Array=new Array();//数组用来存放金额容器
 		public function Main()
 		{
 			cannon_minus_mc.addEventListener(MouseEvent.MOUSE_DOWN, cannonMouseDown);
@@ -37,9 +33,9 @@
 			//创建加农炮
 			createCannon();
 			//用户金额容器显示初始化
-			InitUserMoney();
+			base.initUserMoney();
 			//显示金额
-			displayMoney(my_money);
+			base.displayMoney(base.my_money);
 			//舞台监控鼠标单击事件开火
 			stage.addEventListener(MouseEvent.CLICK, fire);
 			//添加Timer用来控制间隔1s单击鼠标发射子弹有效
@@ -58,8 +54,8 @@
 			if (e.stageY <= 690 && isCanShoot)
 			{
 				//显示金额
-				my_money -=  cannon_current_level;
-				displayMoney(my_money);
+				base.my_money -=  cannon_current_level;
+				base.displayMoney(base.my_money);
 				//加农炮
 				cannon.gotoAndPlay(2);
 				//子弹
@@ -91,7 +87,7 @@
 					//如果子弹和鱼有交集
 					if (mc.hitTestObject(fish_mc))
 					{
-						//子弹停止运动，跳到网，1s后删除网
+						//子弹停止运动，跳到网，500ms后删除网
 						mc.removeEventListener(Event.ENTER_FRAME, bulletMoving);
 						mc.gotoAndStop(mc["type"]+7);
 						var removeWebTimer:Timer = new Timer(500,1);
@@ -101,8 +97,6 @@
 						if (mc["type"] >= fish_mc["f_t"])
 						{
 							base.fishIsCatched(fish_mc);
-							my_money +=  Number(fish_mc["f_m"]);
-							displayMoney(my_money);
 						}
 					}
 				}
@@ -196,67 +190,6 @@
 		private function cannonMouseDown(e:MouseEvent):void
 		{
 			e.target.gotoAndStop(2);
-		}
-		//显示金额
-		private function displayMoney(money:Number):void
-		{
-			if (money<=max_money)
-			{
-				var m_string:String = money.toString();
-				//需要补充的0的个数
-				var need_zero:Number = max_money.toString().length - m_string.length;
-				//为m_string补充0
-				if (need_zero>0)
-				{
-					for (var j:Number=0; j<need_zero; j++)
-					{
-						m_string = "0" + m_string;
-					}
-				}
-				//显示金额
-				if (m_string.length > 0)
-				{
-					for (var i:Number=0; i<m_string.length; i++)
-					{
-						var m_char = m_string.charAt(i);
-						blacks[i].gotoAndStop(Number(m_char)+1);
-					}
-				}
-			}
-		}
-		//用户金额容器显示初始化
-		private function InitUserMoney():void
-		{
-			black1=new BlackNum();
-			black1.x = 155;
-			black1.y = 742;
-			blacks.push(black1);
-			stage.addChild(black1);
-			black2=new BlackNum();
-			black2.x = 178;
-			black2.y = 742;
-			blacks.push(black2);
-			stage.addChild(black2);
-			black3=new BlackNum();
-			black3.x = 201;
-			black3.y = 742;
-			blacks.push(black3);
-			stage.addChild(black3);
-			black4=new BlackNum();
-			black4.x = 223;
-			black4.y = 742;
-			blacks.push(black4);
-			stage.addChild(black4);
-			black5=new BlackNum();
-			black5.x = 246;
-			black5.y = 742;
-			blacks.push(black5);
-			stage.addChild(black5);
-			black6=new BlackNum();
-			black6.x = 270;
-			black6.y = 742;
-			blacks.push(black6);
-			stage.addChild(black6);
 		}
 	}
 }
