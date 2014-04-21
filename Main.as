@@ -53,31 +53,71 @@
 		{
 			if (e.stageY <= 690 && isCanShoot)
 			{
+				//获取加农炮（子弹）需要调整的角度
+				var angle1:Number = getAngleBy2Points(cannon.x,cannon.y,e.stageX,e.stageY);
 				//显示金额
 				base.my_money -=  cannon_current_level;
 				base.displayMoney(base.my_money);
 				//加农炮
 				cannon.gotoAndPlay(2);
+				cannon.rotation = angle1;
 				//子弹
 				var bullet:Bullet=new Bullet();
-				//子弹的种类
 				bullet.gotoAndStop(cannon_current_level);
-				//记录子弹的种类
+				bullet.rotation = angle1;
+				var radian1:Number=angle1*(Math.PI/180);
+				bullet["v_x"] = bullet_speed * Math.sin(radian1);
+				bullet["v_y"] =  -  bullet_speed * Math.cos(radian1);
 				bullet["type"] = cannon_current_level;
-				//子弹的初始位置
-				bullet.x=(cannon.x+cannon.x+cannon.width)/2-bullet.width/2;
-				bullet.y = cannon.y - 10;
+				bullet.x = cannon.x + cannon.height * Math.sin(radian1);
+				bullet.y = cannon.y - cannon.height * Math.cos(radian1);
 				bullet.addEventListener(Event.ENTER_FRAME, bulletMoving);
 				stage.addChild(bullet);
 				isCanShoot = false;
 				shootTimer.start();
 			}
 		}
+		/*获取长方形元件的中心点与鼠标点击点连线和长方形的角度  
+		x1代表中心点的X坐标  
+		y1代表中心点的Y坐标  
+		x2代表鼠标点的X坐标  
+		y2代表鼠标垫的Y坐标*/
+		private function getAngleBy2Points(x1:Number,y1:Number,x2:Number,y2:Number):Number
+		{
+			//获取长方形元件的中心点与鼠标点击点连线和长方形的弧度  
+			var radian1:Number=Math.atan((x2-x1)/(y1-y2));
+			//根据弧度获取角度  
+			var angle1:Number=radian1/(Math.PI/180);
+			if (x2 >= x1)
+			{
+				if (y2 <= y1)
+				{
+					angle1 = angle1;
+				}
+				else
+				{
+					angle1 +=  180;
+				}
+			}
+			else
+			{
+				if (y2 > y1)
+				{
+					angle1 +=  180;
+				}
+				else
+				{
+					angle1 +=  360;
+				}
+			}
+			return angle1;
+		}
 		//子弹移动
 		private function bulletMoving(e:Event):void
 		{
 			var mc:Bullet = e.target as Bullet;
-			mc.y -=  bullet_speed;
+			mc.x +=  mc["v_x"];
+			mc.y +=  mc["v_y"];
 			var f_array:Array = base.f_array;
 			if (f_array.length > 0)
 			{
@@ -177,8 +217,8 @@
 					cannon=new Cannon1();
 					break;
 			}
-			cannon.x = (cannon_minus_mc.x+cannon_plus_mc.x+cannon_plus_mc.width)/2-cannon.width/2;
-			cannon.y = cannon_minus_mc.y - 50;
+			cannon.x = (cannon_minus_mc.x+cannon_plus_mc.x+cannon_plus_mc.width)/2;
+			cannon.y = cannon_minus_mc.y + 35;
 			stage.addChild(cannon);
 		}
 		//鼠标松开增大、减小加农炮按钮
