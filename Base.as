@@ -17,7 +17,7 @@
 		private var coin_target_y:Number = 670;//硬币移动的目标Y坐标
 		private var black1,black2,black3,black4,black5,black6:BlackNum;//用户金额容器
 		private var blacks:Array=new Array();//数组用来存放金额容器
-		public var my_money:Number = 100;//用户拥有的金额
+		public var my_money:Number = 500;//用户拥有的金额
 		private var max_money:Number = 999999;//最大金额
 		private var coin_speed:Number = 10;//硬币运动的速度
 		public function Base()
@@ -235,7 +235,7 @@
 		//显示金额
 		public function displayMoney(money:Number):void
 		{
-			if (money<=max_money)
+			if (money>=0&&money<=max_money)
 			{
 				var m_string:String = money.toString();
 				//需要补充的0的个数

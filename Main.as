@@ -62,7 +62,7 @@
 		//开火
 		private function fire(e:MouseEvent):void
 		{
-			if (e.stageY <= 690 && isCanShoot)
+			if (e.stageY <= 690 && isCanShoot&&(base.my_money - cannon_current_level)>=0)
 			{
 				//获取加农炮（子弹）需要调整的角度
 				var angle1:Number = base.getAngleBy2Points(cannon.x,cannon.y,e.stageX,e.stageY);
