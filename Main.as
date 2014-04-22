@@ -6,6 +6,7 @@
 	import flash.events.Event;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
+	import flash.display.Stage;
 
 	//设置flash尺寸，背景颜色，帧频
 	//[SWF(width="1024", height="768", backgroundColor="#ffffff", frameRate="24")]
@@ -20,7 +21,7 @@
 		private var cannon:MovieClip = null;//加农炮
 		private var isCanShoot:Boolean = true;//是否有效发射子弹
 		private var shootTimer:Timer = null;//用来控制射击时间间隔
-		public function Main()
+		public function Main(s:Stage)
 		{
 			//减小加农炮;
 			cannon_minus_mc=new Cannon_Minus();
@@ -47,7 +48,7 @@
 			//显示金额
 			base.displayMoney(base.my_money);
 			//舞台监控鼠标单击事件开火
-			stage.addEventListener(MouseEvent.CLICK, fire);
+			s.addEventListener(MouseEvent.CLICK, fire);
 			//添加Timer用来控制间隔1s单击鼠标发射子弹有效
 			shootTimer = new Timer(1000,0);
 			shootTimer.addEventListener(TimerEvent.TIMER, shootTimerHandler);
