@@ -5,10 +5,11 @@
 	import flash.display.MovieClip;
 	import flash.utils.Timer;
 	import flash.events.TimerEvent;
+	import flash.display.Sprite;
 
 	public class Base
 	{
-		private var s:Stage;//舞台
+		private var s:Sprite;//容器
 		private var s_width = 1024;//舞台的宽度
 		private var s_height = 768;//舞台的高度
 		public var f_array:Array = new Array  ;//用来存储生成的鱼
@@ -18,12 +19,13 @@
 		private var blacks:Array=new Array();//数组用来存放金额容器
 		public var my_money:Number = 10000;//用户拥有的金额
 		private var max_money:Number = 999999;//最大金额
+		private var coin_speed:Number = 10;//硬币运动的速度
 		public function Base()
 		{
 			// constructor code
 		}
 		//创建鱼群（1s创建一条鱼）
-		public function createFish(_s:Stage):void
+		public function createFish(_s:Sprite):void
 		{
 			s = _s;
 			var createTimer:Timer = new Timer(1000,0);
@@ -39,6 +41,41 @@
 			//将鱼添加到数组
 			f_array.push(mc);
 		}
+		/*获取长方形元件的中心点与鼠标点击点连线和长方形的角度  
+		x1代表中心点的X坐标  
+		y1代表中心点的Y坐标  
+		x2代表鼠标点的X坐标  
+		y2代表鼠标垫的Y坐标*/
+		public function getAngleBy2Points(x1:Number,y1:Number,x2:Number,y2:Number):Number
+		{
+			//获取长方形元件的中心点与鼠标点击点连线和长方形的弧度  
+			var radian1:Number=Math.atan((x2-x1)/(y1-y2));
+			//根据弧度获取角度  
+			var angle1:Number=radian1/(Math.PI/180);
+			if (x2 >= x1)
+			{
+				if (y2 <= y1)
+				{
+					angle1 = angle1;
+				}
+				else
+				{
+					angle1 +=  180;
+				}
+			}
+			else
+			{
+				if (y2 > y1)
+				{
+					angle1 +=  180;
+				}
+				else
+				{
+					angle1 +=  360;
+				}
+			}
+			return angle1;
+		}
 		//显示硬币
 		private function appearCoin(fish_mc:MovieClip):void
 		{
@@ -47,10 +84,11 @@
 			coin_mc.x = fish_mc.x;
 			coin_mc.y = fish_mc.y;
 			coin_mc["f_m"] = fish_mc["f_m"];
-			//根据2个点获取两点线和X轴的弧度
-			var radian1:Number=Math.atan((coin_target_y-coin_mc.y)/(coin_mc.x-coin_target_x));
-			coin_mc["v_x"] = -10 * Math.cos(radian1);
-			coin_mc["v_y"] = 10 * Math.sin(radian1);
+			//获取硬币的坐标和硬币目标坐标的夹角
+			var angle1:Number = getAngleBy2Points(coin_target_x,coin_target_y,coin_mc.x,coin_mc.y);
+			var radian1=angle1*(Math.PI/180);
+			coin_mc["v_x"] =  -  coin_speed * Math.sin(radian1);
+			coin_mc["v_y"] = coin_speed * Math.cos(radian1);
 			coin_mc.addEventListener(Event.ENTER_FRAME, moveCoin);
 			s.addChild(coin_mc);
 		}

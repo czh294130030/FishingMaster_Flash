@@ -11,6 +11,8 @@
 	//[SWF(width="1024", height="768", backgroundColor="#ffffff", frameRate="24")]
 	public class Main extends Sprite
 	{
+		private var cannon_minus_mc:Cannon_Minus = null;//增大按钮
+		private var cannon_plus_mc:Cannon_Plus = null;//减小按钮
 		private var base:Base=new Base();
 		private var cannon_current_level:Number = 1;//当前加农炮的等级
 		private var cannon_max_level:Number = 7;//加农炮的最高等级
@@ -20,14 +22,22 @@
 		private var shootTimer:Timer = null;//用来控制射击时间间隔
 		public function Main()
 		{
+			//减小加农炮;
+			cannon_minus_mc=new Cannon_Minus();
+			cannon_minus_mc.x = 476;
+			cannon_minus_mc.y = 732;
 			cannon_minus_mc.addEventListener(MouseEvent.MOUSE_DOWN, cannonMouseDown);
 			cannon_minus_mc.addEventListener(MouseEvent.MOUSE_UP, cannonMouseUp);
+			cannon_minus_mc.addEventListener(MouseEvent.CLICK, cannonMinusMouseClick);
+			this.addChild(cannon_minus_mc);
+			//增大加农炮;
+			cannon_plus_mc=new Cannon_Plus();
+			cannon_plus_mc.x = 607;
+			cannon_plus_mc.y = 732;
 			cannon_plus_mc.addEventListener(MouseEvent.MOUSE_DOWN, cannonMouseDown);
 			cannon_plus_mc.addEventListener(MouseEvent.MOUSE_UP, cannonMouseUp);
-			//减小加农炮;
-			cannon_minus_mc.addEventListener(MouseEvent.CLICK, cannonMinusMouseClick);
-			//增大加农炮;
 			cannon_plus_mc.addEventListener(MouseEvent.CLICK, cannonPlusMouseClick);
+			this.addChild(cannon_plus_mc);
 			//创建鱼群;
 			createFish();
 			//创建加农炮
@@ -54,7 +64,7 @@
 			if (e.stageY <= 690 && isCanShoot)
 			{
 				//获取加农炮（子弹）需要调整的角度
-				var angle1:Number = getAngleBy2Points(cannon.x,cannon.y,e.stageX,e.stageY);
+				var angle1:Number = base.getAngleBy2Points(cannon.x,cannon.y,e.stageX,e.stageY);
 				//显示金额
 				base.my_money -=  cannon_current_level;
 				base.displayMoney(base.my_money);
@@ -72,45 +82,10 @@
 				bullet.x = cannon.x + cannon.height * Math.sin(radian1);
 				bullet.y = cannon.y - cannon.height * Math.cos(radian1);
 				bullet.addEventListener(Event.ENTER_FRAME, bulletMoving);
-				stage.addChild(bullet);
+				this.addChild(bullet);
 				isCanShoot = false;
 				shootTimer.start();
 			}
-		}
-		/*获取长方形元件的中心点与鼠标点击点连线和长方形的角度  
-		x1代表中心点的X坐标  
-		y1代表中心点的Y坐标  
-		x2代表鼠标点的X坐标  
-		y2代表鼠标垫的Y坐标*/
-		private function getAngleBy2Points(x1:Number,y1:Number,x2:Number,y2:Number):Number
-		{
-			//获取长方形元件的中心点与鼠标点击点连线和长方形的弧度  
-			var radian1:Number=Math.atan((x2-x1)/(y1-y2));
-			//根据弧度获取角度  
-			var angle1:Number=radian1/(Math.PI/180);
-			if (x2 >= x1)
-			{
-				if (y2 <= y1)
-				{
-					angle1 = angle1;
-				}
-				else
-				{
-					angle1 +=  180;
-				}
-			}
-			else
-			{
-				if (y2 > y1)
-				{
-					angle1 +=  180;
-				}
-				else
-				{
-					angle1 +=  360;
-				}
-			}
-			return angle1;
 		}
 		//子弹移动
 		private function bulletMoving(e:Event):void
@@ -144,21 +119,21 @@
 			if (mc.y < 0)
 			{
 				mc.removeEventListener(Event.ENTER_FRAME, bulletMoving);
-				stage.removeChild(mc);
+				this.removeChild(mc);
 			}
 		}
 		//删除网
 		private function removeWebTimerHandler(e:Event, mc:MovieClip)
 		{
-			if (stage.contains(mc))
+			if (this.contains(mc))
 			{
-				stage.removeChild(mc);
+				this.removeChild(mc);
 			}
 		}
 		//创建鱼群
 		private function createFish():void
 		{
-			base.createFish(stage);
+			base.createFish(this);
 		}
 		//减小加农炮;
 		private function cannonMinusMouseClick(e:MouseEvent):void
@@ -188,7 +163,7 @@
 			//如果舞台已经存在加农炮，删掉它
 			if (cannon!=null)
 			{
-				stage.removeChild(cannon);
+				this.removeChild(cannon);
 			}
 			switch (cannon_current_level)
 			{
@@ -219,7 +194,9 @@
 			}
 			cannon.x = (cannon_minus_mc.x+cannon_plus_mc.x+cannon_plus_mc.width)/2;
 			cannon.y = cannon_minus_mc.y + 35;
-			stage.addChild(cannon);
+			this.addChild(cannon);
+			this.setChildIndex(cannon_minus_mc,this.numChildren-1);
+			this.setChildIndex(cannon_plus_mc,this.numChildren-1);
 		}
 		//鼠标松开增大、减小加农炮按钮
 		private function cannonMouseUp(e:MouseEvent):void
