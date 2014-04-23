@@ -10,8 +10,8 @@
 	public class Base
 	{
 		private var s:Sprite;//容器
-		private var s_width = 1024;//舞台的宽度
-		private var s_height = 768;//舞台的高度
+		public var s_width = 1024;//舞台的宽度
+		public var s_height = 768;//舞台的高度
 		public var f_array:Array = new Array  ;//用来存储生成的鱼
 		private var coin_target_x:Number = 180;//硬币移动的目标X坐标
 		private var coin_target_y:Number = 670;//硬币移动的目标Y坐标

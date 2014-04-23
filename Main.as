@@ -117,7 +117,7 @@
 					}
 				}
 			}
-			if (mc.y < 0)
+			if (mc.y < 0 || mc.y > base.s_height || mc.x < 0 || mc.x > base.s_width)
 			{
 				mc.removeEventListener(Event.ENTER_FRAME, bulletMoving);
 				this.removeChild(mc);
